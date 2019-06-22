@@ -19,10 +19,16 @@ const app = new App({
 app.command('/echo', async ({command, ack, say}) => {
   // Acknowledge command request
   ack();
-
-  console.log('echoing');
-
   say(`${command.text}`);
+});
+
+app.command('/whoami', async ({command, ack, say}) => {
+  ack();
+  say(`Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUser Name: ${command.user_name}`);
+});
+
+app.command('/wrexy', async ({command, ack, say}) => {
+  ack();say(`If this was hooked up I'd have sent this somewhere: ${command.text}`);
 });
 
 app.message(':wave:', async ({message, say}) => {
