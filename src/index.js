@@ -8,7 +8,13 @@ const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
 });
 
-app.command('/wrexy', () => 'Hi Friend!');
+// The echo command simply echoes on command
+app.command('/echo', async ({ command, ack, say }) => {
+    // Acknowledge command request
+    ack();
+
+    say(`${command.text}`);
+});
 
 (async () => {
     await app.start(process.env.PORT || 3000);
