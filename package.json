@@ -1,0 +1,19 @@
+{
+  "name": "wrex-slack-app",
+  "version": "1.0.0",
+  "description": "A Slackbot built with Bolt",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node src/index.js"
+  },
+  "author": "",
+  "dependencies": {
+    "@slack/bolt": "^1.2.0",
+    "@types/dotenv": "^6.1.1",
+    "dotenv": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.2"
+  }
+}
