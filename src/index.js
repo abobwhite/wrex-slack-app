@@ -24,7 +24,7 @@ app.command('/echo', async ({command, ack, say}) => {
 
 app.command('/whoami', async ({command, ack, say}) => {
   ack();
-  say(`Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUser Name: ${command.user_name}`);
+  say(`Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUsername: ${command.user_name}`);
 });
 
 app.command('/wrexy', async ({command, ack, say}) => {
