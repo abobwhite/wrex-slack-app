@@ -10,10 +10,16 @@ const app = new App({
 
 // The echo command simply echoes on command
 app.command('/echo', async ({ command, ack, say }) => {
+    console.log("echoing");
     // Acknowledge command request
     ack();
 
     say(`${command.text}`);
+});
+
+app.message(':wave:', async ({ message, say}) => {
+    console.log("saying hi");
+    say(`Hello, <@${message.user}>`);
 });
 
 (async () => {
