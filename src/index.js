@@ -34,6 +34,16 @@ app.command('/wrexy', async ({command, ack, say}) => {
     }
 });
 
+app.command('/wrexy-list', async ({command, ack, say}) => {
+    ack();
+    try {
+        const statuses = await axios.get(`http://165.22.45.117/api/users/${command.user_id}/statuses`);
+        say({response_type:'ephemeral' , text:statuses})
+    } catch {
+        say({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
+    }
+});
+
 // app.event('message', async ({event, message, say}) => {
 //     // const channels = await app.client.im.list();
 //     try {
