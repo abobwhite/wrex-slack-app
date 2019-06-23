@@ -28,9 +28,9 @@ app.command('/wrexy', async ({command, ack, say}) => {
     ack();
     try {
         await axios.post(`http://165.22.45.117/api/users/${command.user_id}/statuses`, {message: command.text});
-        say(`Thanks! I posted that status to the app for you!`)
+        say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
     } catch {
-        say(`Uh-oh! That status didn't go through. Can you try again?`);
+        say({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
     }
 });
 
