@@ -14,15 +14,9 @@ const app = new App({
 (async () => {
   const port = process.env.PORT || 3000;
   const server = await app.start(port);
+  setupTrigger(app);
   console.log('⚡️ Bolt app is running!', server.address());
 })();
-
-// The echo command simply echoes on command
-app.command('/echo', async ({command, ack, say}) => {
-  // Acknowledge command request
-  ack();
-  say(`${command.text}`);
-});
 
 app.command('/whoami', async ({command, ack, say}) => {
   ack();
@@ -30,6 +24,7 @@ app.command('/whoami', async ({command, ack, say}) => {
 });
 
 app.command('/wrexy', async ({command, ack, say}) => {
+  console.log(server);
   ack();
   try {
     await axios.post(`http://165.22.45.117/api/users/${command.user_id}/statuses`, {message: command.text});
@@ -39,8 +34,8 @@ app.command('/wrexy', async ({command, ack, say}) => {
   }
 });
 
-app.message(':wave:', async ({message, say}) => {
-  console.log("saying hi");
-  say(`Hello, <@${message.user}>`);
-});
-
+const setupTrigger = (app) => {
+    app.receiver.app.post('/trigger/:userId', function (req, res) {
+        res.send(`Prompt user ${req.params.userId}`);
+    })
+};
