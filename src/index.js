@@ -21,7 +21,7 @@ const app = new App({
 
 app.command('/whoami', async ({command, ack, say}) => {
     ack();
-    say(`Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUsername: ${command.user_name}`);
+    say({response_type: 'ephemeral', text: `Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUsername: ${command.user_name}`});
 });
 
 app.command('/wrexy', async ({command, ack, say}) => {
