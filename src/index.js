@@ -39,10 +39,17 @@ const setupTrigger = () => {
         const userId = req.params.userId;
         try {
             const conversation = await app.client.im.open({token: SLACK_BOT_TOKEN, user: userId});
+            let prompts = [
+                `Don't forget to update me with what you've been doing this week!`,
+                `Haven't seen you in awhile. You still work here?`,
+                `What’s going on at work? Maybe I can help`,
+                `Did you do anything awesome today?`,
+                `You up? What's been going on?`,
+            ];
             await app.client.chat.postMessage({
                 token: SLACK_BOT_TOKEN,
                 channel: conversation.channel.id,
-                text: `Don't forget to update wrex with what you've been doing this week!`
+                text: prompts[Math.floor(Math.random()*prompts.length)]
             });
             res.send(`Prompted user ${userId}`);
         } catch (e) {
