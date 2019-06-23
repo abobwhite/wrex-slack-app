@@ -51,9 +51,11 @@ const setupTrigger = () => {
                 channel: conversation.channel.id,
                 text: prompts[Math.floor(Math.random()*prompts.length)]
             });
+            res.status(200);
             res.send(`Prompted user ${userId}`);
         } catch (e) {
             console.log(e);
+            res.status(500);
             res.send(`Failed to prompt user ${userId}`);
         }
     });
