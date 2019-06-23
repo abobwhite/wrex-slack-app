@@ -37,8 +37,10 @@ app.command('/wrexy', async ({command, ack, say}) => {
 app.command('/wrexy-list', async ({command, ack, say}) => {
     ack();
     try {
-        const statuses = await axios.get(`http://165.22.45.117/api/users/${command.user_id}/statuses`);
-        say({response_type:'ephemeral' , text:statuses.body.toString()})
+        const statusResponse = await axios.get(`http://165.22.45.117/api/users/${command.user_id}/statuses`);
+        const statuses = statusResponse.data;
+        console.log(`Retrieved statuses: ${statuses.toString()}`);
+        say({response_type:'ephemeral' , text:statuses.toString()})
     } catch {
         say({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
     }
