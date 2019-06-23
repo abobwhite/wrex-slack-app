@@ -38,7 +38,7 @@ app.command('/wrexy-list', async ({command, ack, say}) => {
     ack();
     try {
         const statusResponse = await axios.get(`http://165.22.45.117/api/users/${command.user_id}/statuses`);
-        const statuses = statusResponse.data.reduce((previous, current) => `${previous}\n\n${current.message}`, '');
+        const statuses = statusResponse.data.reduce((previous, current) => `${previous}\n* ${current.message}`, 'Statuses\n--------\n');
         console.log(`Retrieved statuses: ${statuses}`);
         say({response_type:'ephemeral' , text:statuses})
     } catch {
