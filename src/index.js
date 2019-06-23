@@ -34,14 +34,14 @@ app.command('/wrexy', async ({command, ack, say}) => {
     }
 });
 
-app.event('message', async ({event, message, say}) => {
-    const channels = await app.client.im.list();
+app.event('message.im', async ({event, message, say}) => {
+    // const channels = await app.client.im.list();
     try {
-        if (channels.map(x => x.channel_id).contains(event.channel)) {
+        // if (channels.map(x => x.channel_id).contains(event.channel)) {
             console.log(event.user, message.text);
             await axios.post(`http://165.22.45.117/api/users/${event.user.id}/statuses`, {message: message.text});
             say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
-        }
+        // }
     } catch {
         say({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
     }
