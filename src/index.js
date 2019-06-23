@@ -35,7 +35,12 @@ app.command('/wrexy', async ({command, ack, say}) => {
 });
 
 const setupTrigger = (app) => {
-    app.receiver.app.post('/trigger/:userId', function (req, res) {
-        res.send(`Prompt user ${req.params.userId}`);
-    })
+    app.receiver.app.post('/prompt/:userId', async (req, res) => {
+        try {
+            // Prompt a user
+            res.send(`Prompted user ${req.params.userId}`);
+        } catch {
+            res.send(`Failed to prompt user ${req.params.userId}`);
+        }
+    });
 };
