@@ -31,10 +31,12 @@ app.command('/whoami', async ({command, ack, say}) => {
 
 app.command('/wrexy', async ({command, ack, say}) => {
   ack();
-  axios
-      .post(`http://165.22.45.117:8081/users/${command.user_id}/statuses`, {message: command.text})
-      .then(say(`Thanks! I posted that status to the app for you!`))
-      .catch(say(`Uh-oh! That status didn't go through. Can you try again?`));
+  try {
+    await axios.post(`http://165.22.45.117:8081/users/${command.user_id}/statuses`, {message: command.text})
+    say(`Thanks! I posted that status to the app for you!`)
+  } catch {
+    say(`Uh-oh! That status didn't go through. Can you try again?`);
+  }
 });
 
 app.message(':wave:', async ({message, say}) => {
