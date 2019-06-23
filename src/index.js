@@ -5,9 +5,10 @@ const axios = require('axios')
 
 dotenv.config();
 
+const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    token: process.env.SLACK_BOT_TOKEN,
+    token: SLACK_BOT_TOKEN,
     logLevel: LogLevel.DEBUG,
 });
 
@@ -24,7 +25,6 @@ app.command('/whoami', async ({command, ack, say}) => {
 });
 
 app.command('/wrexy', async ({command, ack, say}) => {
-    console.log(server);
     ack();
     try {
         await axios.post(`http://165.22.45.117/api/users/${command.user_id}/statuses`, {message: command.text});
@@ -38,21 +38,15 @@ const setupTrigger = () => {
     app.receiver.app.post('/prompt/:userId', async (req, res) => {
         const userId = req.params.userId;
         try {
-            // Prompt a user
-            const conversations = await app.client.conversations.list({
-                token: context.botToken,
-            });
-            console.log(conversations);
-            app.message(async ({message, context}) => {
-                app.client.chat.postMessage({
-                    token: context.botToken,
-                    channel: conversations.find(x => x.is_im === true && x.user === userId).id,
-                    text: `Don't forget to update wrex with what you've been doing this week!`
-                })
-                ;
+            const conversation = await app.client.im.open({token: SLACK_BOT_TOKEN, user: userId});
+            await app.client.chat.postMessage({
+                token: SLACK_BOT_TOKEN,
+                channel: conversation.channel.id,
+                text: `Don't forget to update wrex with what you've been doing this week!`
             });
             res.send(`Prompted user ${userId}`);
-        } catch {
+        } catch (e) {
+            console.log(e);
             res.send(`Failed to prompt user ${userId}`);
         }
     });
