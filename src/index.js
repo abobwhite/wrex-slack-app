@@ -1,5 +1,7 @@
 const dotenv = require('dotenv');
 const {App, LogLevel} = require('@slack/bolt');
+const axios = require('axios')
+
 
 dotenv.config();
 
@@ -28,7 +30,9 @@ app.command('/whoami', async ({command, ack, say}) => {
 });
 
 app.command('/wrexy', async ({command, ack, say}) => {
-  ack();say(`If this was hooked up I'd have sent this somewhere: ${command.text}`);
+  ack();
+  axios.post(`http://165.22.45.117:8081/users/${command.user_id}/statuses`, {message: command.text});
+  say(`If this was hooked up I'd have sent this somewhere: ${command.text}`);
 });
 
 app.message(':wave:', async ({message, say}) => {
