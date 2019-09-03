@@ -1,7 +1,6 @@
 const dotenv = require('dotenv');
 const {App, LogLevel} = require('@slack/bolt');
-const axios = require('axios')
-
+const axios = require('axios');
 
 dotenv.config();
 
@@ -19,28 +18,30 @@ const app = new App({
     console.log('⚡️ Bolt app is running!', server.address());
 })();
 
-app.command('/whoami', async ({command, ack, say}) => {
+app.command('/whoami', async ({command, ack, respond}) => {
     ack();
-    say({response_type: 'ephemeral', text: `Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUsername: ${command.user_name}`});
+    respond({response_type: 'ephemeral', text: `Team Id: ${command.team_id}\nUser Id: ${command.user_id}\nUsername: ${command.user_name}`});
 });
 
-app.command('/wrexy', async ({command, ack, say}) => {
+app.command('/wrexy', async ({command, ack, respond}) => {
     ack();
     try {
         await axios.post(`http://165.227.185.149/api/users/${command.user_id}/statuses`, {message: command.text});
-        say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
+        respond({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
     } catch {
-        say({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
+        respond({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
     }
 });
 
-app.command('/wrexy-list', async ({command, ack, say}) => {
+app.command('/wrexy-list', async ({command, ack, respond}) => {
     ack();
     try {
-        const statuses = await axios.get(`http://165.227.185.149/api/users/${command.user_id}/statuses`);
-        say({response_type:'ephemeral' , text:statuses.body.toString()})
+        const statusResponse = await axios.get(`http://165.227.185.149/api/users/${command.user_id}/statuses`);
+        const statuses = statusResponse.data.reduce((previous, current) => `${previous}\n* ${current.message}`, 'Statuses\n--------\n');
+        console.log(`Retrieved statuses: ${statuses}`);
+        respond({response_type:'ephemeral' , text:statuses})
     } catch {
-        say({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
+        respond({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
     }
 });
 
