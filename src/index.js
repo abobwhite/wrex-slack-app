@@ -27,7 +27,7 @@ app.command('/whoami', async ({command, ack, say}) => {
 app.command('/wrexy', async ({command, ack, say}) => {
     ack();
     try {
-        await axios.post(`http://165.22.45.117/api/users/${command.user_id}/statuses`, {message: command.text});
+        await axios.post(`http://165.227.185.149/api/users/${command.user_id}/statuses`, {message: command.text});
         say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
     } catch {
         say({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
@@ -37,7 +37,7 @@ app.command('/wrexy', async ({command, ack, say}) => {
 app.command('/wrexy-list', async ({command, ack, say}) => {
     ack();
     try {
-        const statuses = await axios.get(`http://165.22.45.117/api/users/${command.user_id}/statuses`);
+        const statuses = await axios.get(`http://165.227.185.149/api/users/${command.user_id}/statuses`);
         say({response_type:'ephemeral' , text:statuses.body.toString()})
     } catch {
         say({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
@@ -49,7 +49,7 @@ app.command('/wrexy-list', async ({command, ack, say}) => {
 //     try {
 //         // if (channels.map(x => x.channel_id).contains(event.channel)) {
 //             console.log('message', event.user, message.text);
-//             await axios.post(`http://165.22.45.117/api/users/${event.user.id}/statuses`, {message: message.text});
+//             await axios.post(`http://165.227.185.149/api/users/${event.user.id}/statuses`, {message: message.text});
 //             say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
 //         // }
 //     } catch {
