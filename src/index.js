@@ -4,6 +4,8 @@ const axios = require('axios');
 
 dotenv.config();
 
+const API_ROOT = 'http://wrex.rocks/api';
+
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -26,7 +28,7 @@ app.command('/whoami', async ({command, ack, respond}) => {
 app.command('/wrexy', async ({command, ack, respond}) => {
     ack();
     try {
-        await axios.post(`http://165.227.185.149/api/users/${command.user_id}/statuses`, {message: command.text});
+        await axios.post(`${API_ROOT}/users/${command.user_id}/statuses`, {message: command.text});
         respond({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
     } catch {
         respond({response_type: 'ephemeral', text: `Uh-oh! That status didn't go through. Can you try again?`});
@@ -36,7 +38,7 @@ app.command('/wrexy', async ({command, ack, respond}) => {
 app.command('/wrexy-list', async ({command, ack, respond}) => {
     ack();
     try {
-        const statusResponse = await axios.get(`http://165.227.185.149/api/users/${command.user_id}/statuses`);
+        const statusResponse = await axios.get(`${API_ROOT}/users/${command.user_id}/statuses`);
         const statuses = statusResponse.data.reduce((previous, current) => `${previous}\n* ${current.message}`, 'Statuses\n--------\n');
         console.log(`Retrieved statuses: ${statuses}`);
         respond({response_type:'ephemeral' , text:statuses})
@@ -50,7 +52,7 @@ app.command('/wrexy-list', async ({command, ack, respond}) => {
 //     try {
 //         // if (channels.map(x => x.channel_id).contains(event.channel)) {
 //             console.log('message', event.user, message.text);
-//             await axios.post(`http://165.227.185.149/api/users/${event.user.id}/statuses`, {message: message.text});
+//             await axios.post(`${API_ROOT}/users/${event.user.id}/statuses`, {message: message.text});
 //             say({response_type:'ephemeral' , text:`Thanks! I posted that status to the app for you!`})
 //         // }
 //     } catch {
