@@ -27,6 +27,15 @@ pipeline {
       }
     }
   }
+  post {
+    failure {
+      slackSend color: "danger", message: "ಠ_ಠ ${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}: \n Check console output at ${env.BUILD_URL} to view the results. @here"
+    }
+
+    success {
+      slackSend color: "good", message: "ʘ‿ʘ ${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}: \n Check console output at ${env.BUILD_URL} to view the results."
+    }
+  }
   environment {
     DOCKER_IMAGE = "abobwhite/wrex-slack-app"
   }
