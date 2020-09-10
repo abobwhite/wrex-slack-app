@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const {App, LogLevel} = require('@slack/bolt');
 const axios = require('axios');
+const bodyParser = require('body-parser');
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ const app = new App({
 (async () => {
     const port = process.env.PORT || 3000;
     const server = await app.start(port);
-    setupTrigger();
+    setupCustomEndpoints();
     console.log('⚡️ Bolt app is running!', server.address());
 })();
 
@@ -72,7 +73,9 @@ app.command('/wrexy-wrex', async ({command, ack, respond}) => {
 //     }
 // });
 
-const setupTrigger = () => {
+const jsonParser = bodyParser.json();
+
+const setupCustomEndpoints = () => {
     app.receiver.app.post('/prompt/:userId', async (req, res) => {
         const userId = req.params.userId;
         try {
@@ -98,7 +101,7 @@ const setupTrigger = () => {
         }
     });
 
-    app.receiver.app.post('/recommendation-notify/:userId', async (req, res) => {
+    app.receiver.app.post('/recommendation-notify/:userId', jsonParser, async (req, res) => {
         const userId = req.params.userId;
         const recommendations = req.body;
         try {
