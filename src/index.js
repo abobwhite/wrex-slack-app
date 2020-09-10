@@ -35,7 +35,7 @@ app.command('/wrexy', async ({command, ack, respond}) => {
     }
 });
 
-app.command('/wrexy-list', async ({command, ack, respond}) => {
+app.command('/wrexy-statuses', async ({command, ack, respond}) => {
     ack();
     try {
         const statusResponse = await axios.get(`${API_ROOT}/users/${command.user_id}/statuses`);
@@ -43,7 +43,19 @@ app.command('/wrexy-list', async ({command, ack, respond}) => {
         console.log(`Retrieved statuses: ${statuses}`);
         respond({response_type:'ephemeral' , text:statuses})
     } catch {
-        respond({response_type: 'ephemeral', text: `Uh-oh! That didn't work!`});
+        respond({response_type: 'ephemeral', text: `Uh-oh! I couldn't find your statuses!`});
+    }
+});
+
+app.command('/wrexy-wrex', async ({command, ack, respond}) => {
+    ack();
+    try {
+        const recommendationResponse = await axios.get(`${API_ROOT}/users/${command.user_id}/recommendations`);
+        const recommendations = recommendationResponse.data.reduce((previous, current) => `${previous}\n* ${current.message}`, 'Recommendations\n--------\n');
+        console.log(`Retrieved recommendations: ${recommendations}`);
+        respond({response_type:'ephemeral' , text:recommendations})
+    } catch {
+        respond({response_type: 'ephemeral', text: `Uh-oh! I couldn't find your recommendations!`});
     }
 });
 
@@ -83,6 +95,41 @@ const setupTrigger = () => {
             console.log(e);
             res.status(500);
             res.send(`Failed to prompt user ${userId}`);
+        }
+    });
+
+    app.receiver.app.post('/recommendation-notify/:userId', async (req, res) => {
+        const userId = req.params.userId;
+        const recommendations = req.body;
+        try {
+            const blocks = [
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: ':tada: I\'ve got new recommendations for you! Check them out!'
+                    }
+                },
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: recommendations.map(rec => `• ${rec}`).join('\n')
+                    }
+                }
+            ];
+            const conversation = await app.client.im.open({token: SLACK_BOT_TOKEN, user: userId});
+            await app.client.chat.postMessage({
+                token: SLACK_BOT_TOKEN,
+                channel: conversation.channel.id,
+                blocks
+            });
+            res.status(200);
+            res.send(`Notified user ${userId} of recommendations`);
+        } catch (e) {
+            console.log(e);
+            res.status(500);
+            res.send(`Failed to notify user ${userId} of recommendations`);
         }
     });
 };
