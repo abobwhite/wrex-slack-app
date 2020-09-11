@@ -14,6 +14,9 @@ const app = new App({
     logLevel: LogLevel.DEBUG,
 });
 
+const boldReplacer = new RegExp('<b>', 'g');
+const boldReplacerClose = new RegExp('</b>', 'g');
+
 (async () => {
     const port = process.env.PORT || 3000;
     const server = await app.start(port);
@@ -53,7 +56,7 @@ app.command('/wrexy-wrex', async ({command, ack, respond}) => {
     try {
         const recommendationResponse = await axios.get(`${API_ROOT}/users/${command.user_id}/recommendations`);
         // Temp html replacement
-        const recommendations = recommendationResponse.data.reduce((previous, current) => `${previous}\n* ${current.message.replace('<b>', '*').replace('</b>', '*')}`, 'Recommendations\n--------\n');
+        const recommendations = recommendationResponse.data.reduce((previous, current) => `${previous}\n* ${current.message.replace(boldReplacer, '*').replace(boldReplacerClose, '*')}`, 'Recommendations\n--------\n');
         console.log(`Retrieved recommendations: ${recommendations}`);
         respond({response_type:'ephemeral' , text:recommendations})
     } catch {
@@ -119,7 +122,7 @@ const setupCustomEndpoints = () => {
                     text: {
                         type: 'mrkdwn',
                         // Temp html replacement
-                        text: recommendations.map(rec => `• ${rec.replace('<b>', '*').replace('</b>', '*')}`).join('\n')
+                        text: recommendations.map(rec => `• ${rec.replace(boldReplacer, '*').replace(boldReplacerClose, '*')}`).join('\n')
                     }
                 }
             ];
