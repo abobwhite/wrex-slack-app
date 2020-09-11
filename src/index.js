@@ -52,7 +52,8 @@ app.command('/wrexy-wrex', async ({command, ack, respond}) => {
     ack();
     try {
         const recommendationResponse = await axios.get(`${API_ROOT}/users/${command.user_id}/recommendations`);
-        const recommendations = recommendationResponse.data.reduce((previous, current) => `${previous}\n* ${current.message}`, 'Recommendations\n--------\n');
+        // Temp html replacement
+        const recommendations = recommendationResponse.data.reduce((previous, current) => `${previous}\n* ${current.message.replace('<b>', '*').replace('</b>', '*')}`, 'Recommendations\n--------\n');
         console.log(`Retrieved recommendations: ${recommendations}`);
         respond({response_type:'ephemeral' , text:recommendations})
     } catch {
@@ -117,7 +118,8 @@ const setupCustomEndpoints = () => {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: recommendations.map(rec => `• ${rec}`).join('\n')
+                        // Temp html replacement
+                        text: recommendations.map(rec => `• ${rec.replace('<b>', '*').replace('</b>', '*')}`).join('\n')
                     }
                 }
             ];
